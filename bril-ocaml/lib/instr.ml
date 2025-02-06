@@ -115,8 +115,8 @@ let args = function
   | PtrAdd ((_ : Dest.t), arg1, arg2) -> [ arg1; arg2 ]
   | Ret arg -> Option.value_map arg ~default:[] ~f:List.return
   | Phi ((_ : Dest.t), label_and_args) -> List.map label_and_args ~f:snd
-  | (Nop | Speculate | Commit | Label _ | Const (_, _) | Jmp _) as instr ->
-    failwithf "Cannot call [args] on %s" (to_string instr) ()
+  | Nop | Speculate | Commit | Const (_, _) | Jmp _ -> []
+  | Label _ as instr -> failwithf "Cannot call [args] on %s" (to_string instr) ()
 
 let set_args args t =
   match (t, args) with
