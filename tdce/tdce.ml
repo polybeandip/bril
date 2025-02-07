@@ -26,15 +26,13 @@ let global instrs =
     in
     let rec global_aux kept = function
         | [] -> kept |> List.rev
-        | h :: t -> begin
+        | h :: t ->
             match Instr.dest h with
             | None -> global_aux (h :: kept) t
-            | Some (arg, _) -> begin
+            | Some (arg, _) ->
                 match ArgSet.find_opt arg args with
                 | None -> global_aux kept t
                 | Some _ -> global_aux (h :: kept) t
-            end
-        end
     in
     global_aux [] instrs
 
@@ -46,46 +44,33 @@ let local block =
             | h :: t ->
                 let args = h |> Instr.args |> ArgSet.of_list in
                 let unused = ArgSet.diff unused args in
-                begin
-                    match Instr.dest h with
-                    | None -> mark_delete unused lastdef delete (i + 1) t
-                    | Some (arg, _) -> 
-                        let unused' = ArgSet.add arg unused in
-                        let lastdef' = (arg, i) :: lastdef in
-                        let delete' = 
-                            match List.assoc_opt arg lastdef with
-                            | None -> delete
-                            | Some j -> j :: delete
-                        in
-                        begin
-                            match ArgSet.find_opt arg unused with
-                            | None -> mark_delete unused' lastdef' delete (i + 1) t
-                            | Some _ -> mark_delete unused' lastdef' delete' (i + 1) t
-                        end
-                end
+                match Instr.dest h with
+                | None -> mark_delete unused lastdef delete (i + 1) t
+                | Some (arg, _) -> 
+                    let unused' = ArgSet.add arg unused in
+                    let lastdef' = (arg, i) :: lastdef in
+                    let delete' = 
+                        match List.assoc_opt arg lastdef with
+                        | None -> delete
+                        | Some j -> j :: delete
+                    in
+                    match ArgSet.find_opt arg unused with
+                    | None -> mark_delete unused' lastdef' delete (i + 1) t
+                    | Some _ -> mark_delete unused' lastdef' delete' (i + 1) t
         in
         mark_delete ArgSet.empty [] [] 0 block
     in
     List.filteri (fun i _ -> not (List.exists (fun j -> i = j) delete)) block
 
 let tdce func = 
-    let blocks (func : Func.t) = func.blocks in
-    let update_blocks (func : Func.t) blocks = { func with blocks } in
-    
     Func.instrs func
     |> converge global
     |> Func.set_instrs func
-    |> blocks 
-    |> Core.String.Map.map ~f:(converge local) 
-    |> update_blocks func
-    |> Func.instrs
-    |> Func.set_instrs func
+    |> Func.map_blocks (converge local)
 
 let _ = 
-    In_channel.stdin 
-    |> Yojson.Basic.from_channel
+    Yojson.Basic.from_channel (In_channel.stdin)
     |> from_json
     |> List.map tdce
     |> to_json
-    |> Yojson.Basic.to_string 
-    |> print_endline
+    |> Yojson.Basic.to_channel (Out_channel.stdout)

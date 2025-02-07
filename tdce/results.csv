@@ -19,8 +19,8 @@ ray-bbox-intersection,baseline,33
 ray-bbox-intersection,tdce,33
 cordic,baseline,517
 cordic,tdce,516
-leibniz,baseline,timeout
-leibniz,tdce,timeout
+leibniz,baseline,12499997
+leibniz,tdce,12499997
 norm,baseline,505
 norm,tdce,505
 pow,baseline,36
@@ -33,8 +33,8 @@ logistic,baseline,1110
 logistic,tdce,1110
 dead-branch,baseline,1196
 dead-branch,tdce,1196
-function_call,baseline,timeout
-function_call,tdce,timeout
+function_call,baseline,59809726
+function_call,tdce,54208816
 eight-queens,baseline,1006454
 eight-queens,tdce,959702
 quicksort-hoare,baseline,27333
