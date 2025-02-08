@@ -1,0 +1,17 @@
+@main {
+  a    : int = const 4;
+  a    : int = id a;
+  b    : int = const 2;
+  prod : int = const 5;
+  cond : bool = eq a b;
+  br cond .true .false;
+
+.true:
+  sum1 : int = add a b;
+  sum2 : int = add b a;
+  prod : int = mul sum1 sum2;
+  print prod;
+  ret;
+.false:
+  print prod;
+}

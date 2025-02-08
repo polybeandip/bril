@@ -1,0 +1,23 @@
+@main {
+  x     : int = const 4;
+  copy1 : int = id x;
+  copy2 : int = id copy1;
+  copy3 : int = id copy2;
+  print copy3;
+}
+
+@chain {
+  x     : int = const 4;
+  copy1 : int = id x;
+  copy2 : int = id copy1;
+
+  other1 : int = id copy1;
+  other2 : int = id other1;
+
+  oother1 : int = id x;
+  oother2 : int = id oother1;
+  oother3 : int = id oother2;
+
+  print other2;
+}
+
