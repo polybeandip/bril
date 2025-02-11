@@ -14,6 +14,7 @@ type t = {
 
 val instrs : t -> Instr.t list
 val set_instrs : t -> Instr.t list -> t
+val blocks : t -> (string * Instr.t list) list
 val map_blocks : (Instr.t list -> Instr.t list) -> t -> t
 val of_json : Yojson.Basic.t -> t
 val to_json : t -> Yojson.Basic.t

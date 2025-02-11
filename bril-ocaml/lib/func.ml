@@ -69,6 +69,8 @@ let set_instrs t instrs =
   let (blocks, order, preds, succs) = process_instrs instrs in
   { t with blocks; order; preds; succs }
 
+let blocks t = Map.to_alist t.blocks
+
 let map_blocks f t = { t with blocks = Map.map t.blocks ~f }
 
 let of_json json =
