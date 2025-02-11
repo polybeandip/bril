@@ -84,7 +84,7 @@ if __name__ == '__main__':
     assert len(tdce) == len(lvn)
     n = len(tdce)
     tdce_avg = sum(tdce)/n
-    lvn_avg  = sum(tdce)/n
+    lvn_avg  = sum(lvn)/n
 
     print("speedup stats")
     print(f"TDCE avg = {tdce_avg} LVN avg = {lvn_avg}")
